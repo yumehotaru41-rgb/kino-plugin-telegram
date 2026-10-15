@@ -6,4 +6,4 @@ Plugin para **Kino TV** que permite explorar, buscar y reproducir videos y conte
 
 1. Abre la aplicación **Kino TV**.
 2. Ve a **Ajustes > Plugins**.
-3. Escribe el identificador de tu repositorio: `tu-usuario-de-github/kino-plugin-telegram`
+3. Escribe la dirección del repositorio: `yumehotaru41-rgb/kino-plugin-telegram`

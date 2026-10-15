@@ -5,7 +5,7 @@
   "apiVersion": 7,
   "description": "Reproduce videos y contenido multimedia directamente desde canales públicos de Telegram.",
   "icon": "icon.png",
-  "main": "index.js",
+  "entry": "index.js",
   "domains": [
     "t.me",
     "telesco.pe"
