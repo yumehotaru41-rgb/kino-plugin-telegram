@@ -4,9 +4,10 @@
   "version": "1.0.0",
   "apiVersion": 7,
   "description": "Reproduce videos y contenido multimedia directamente desde canales públicos de Telegram.",
+  "authors": ["yumehotaru41-rgb"],
   "icon": "icon.png",
   "entry": "index.js",
-  "domains": [
+  "hosts": [
     "t.me",
     "telesco.pe"
   ]
