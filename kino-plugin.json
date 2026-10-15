@@ -1,0 +1,13 @@
+{
+  "id": "telegram-channels",
+  "name": "Telegram Video Streams",
+  "version": "1.0.0",
+  "apiVersion": 7,
+  "description": "Reproduce videos y contenido multimedia directamente desde canales públicos de Telegram.",
+  "icon": "icon.png",
+  "main": "index.js",
+  "domains": [
+    "t.me",
+    "telesco.pe"
+  ]
+}
