@@ -1,14 +1,62 @@
 {
-  "id": "telegram-channels",
-  "name": "Telegram Video Streams",
+  "id": "telegram-public",
+  "name": "Telegram públicos",
   "version": "1.0.0",
-  "apiVersion": 7,
-  "description": "Reproduce videos y contenido multimedia directamente desde canales públicos de Telegram.",
-  "authors": ["yumehotaru41-rgb"],
-  "icon": "icon.png",
-  "entry": "index.js",
+  "apiVersion": 6,
+  "entry": "plugin.js",
+  "description": "Reproduce vídeos de canales públicos de Telegram. Configura los usuarios de los canales (sin @) en Ajustes.",
+  "author": "tu-usuario",
+  "homepage": "https://github.com/tu-usuario/kino-plugin-telegram",
   "hosts": [
     "t.me",
-    "telesco.pe"
+    "*.t.me",
+    "telegram.me",
+    "*.telegram.me",
+    "telegram.org",
+    "*.telegram.org",
+    "cdn-telegram.org",
+    "*.cdn-telegram.org",
+    "telegram-cdn.org",
+    "*.telegram-cdn.org"
+  ],
+  "streamHosts": "any",
+  "capabilities": ["home", "search", "resolve"],
+  "categories": ["movies", "series"],
+  "color": "#2AABEE",
+  "settings": [
+    {
+      "key": "channels",
+      "label": "Canales públicos",
+      "type": "list",
+      "hint": "Usuario del canal sin @ (ej: durov). Solo canales con vista pública.",
+      "max": 20,
+      "required": true,
+      "fields": [
+        {
+          "key": "username",
+          "label": "Usuario del canal",
+          "type": "text",
+          "required": true,
+          "hint": "Sin @ ni t.me/"
+        },
+        {
+          "key": "label",
+          "label": "Nombre (opcional)",
+          "type": "text",
+          "hint": "Cómo se muestra en Inicio"
+        }
+      ]
+    },
+    {
+      "key": "maxPerChannel",
+      "label": "Vídeos por canal",
+      "type": "select",
+      "default": "15",
+      "options": [
+        { "value": "10", "label": "10" },
+        { "value": "15", "label": "15" },
+        { "value": "25", "label": "25" }
+      ]
+    }
   ]
 }
