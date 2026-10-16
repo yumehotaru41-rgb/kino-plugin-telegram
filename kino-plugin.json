@@ -1,7 +1,7 @@
 {
   "id": "telegram-public",
   "name": "Telegram públicos",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "apiVersion": 6,
   "entry": "plugin.js",
   "description": "Reproduce vídeos de canales públicos de Telegram. Configura los usuarios de los canales (sin @) en Ajustes. Solo canales con vista pública.",
@@ -31,7 +31,7 @@
       "key": "channels",
       "label": "Canales públicos",
       "type": "list",
-      "hint": "Usuario del canal sin @ (ej: durov). Solo canales con vista pública en t.me/s/usuario.",
+      "hint": "Usuario sin @ (ej: durov). Solo canales con vista pública.",
       "max": 25,
       "required": true,
       "fields": [
@@ -68,7 +68,7 @@
       "label": "Páginas a cargar",
       "type": "select",
       "default": "2",
-      "hint": "Cada página trae \~20 posts. Más páginas = más vídeos antiguos.",
+      "hint": "Cada página \~20 posts. Más = más historial.",
       "options": [
         { "value": "1", "label": "1 página" },
         { "value": "2", "label": "2 páginas" },
