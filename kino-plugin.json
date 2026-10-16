@@ -1,12 +1,13 @@
 {
   "id": "telegram-public",
   "name": "Telegram públicos",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "apiVersion": 6,
   "entry": "plugin.js",
-  "description": "Reproduce vídeos de canales públicos de Telegram. Configura los usuarios de los canales (sin @) en Ajustes.",
-  "author": "tu-usuario",
-  "homepage": "https://github.com/tu-usuario/kino-plugin-telegram",
+  "description": "Reproduce vídeos de canales públicos de Telegram. Configura los usuarios de los canales (sin @) en Ajustes. Solo canales con vista pública.",
+  "author": "kino-community",
+  "homepage": "https://github.com/kinotvapp/kino-plugins",
+  "icon": "icon.png",
   "hosts": [
     "t.me",
     "*.t.me",
@@ -17,7 +18,9 @@
     "cdn-telegram.org",
     "*.cdn-telegram.org",
     "telegram-cdn.org",
-    "*.telegram-cdn.org"
+    "*.telegram-cdn.org",
+    "telesco.me",
+    "*.telesco.me"
   ],
   "streamHosts": "any",
   "capabilities": ["home", "search", "resolve"],
@@ -28,8 +31,8 @@
       "key": "channels",
       "label": "Canales públicos",
       "type": "list",
-      "hint": "Usuario del canal sin @ (ej: durov). Solo canales con vista pública.",
-      "max": 20,
+      "hint": "Usuario del canal sin @ (ej: durov). Solo canales con vista pública en t.me/s/usuario.",
+      "max": 25,
       "required": true,
       "fields": [
         {
@@ -51,11 +54,25 @@
       "key": "maxPerChannel",
       "label": "Vídeos por canal",
       "type": "select",
-      "default": "15",
+      "default": "20",
       "options": [
         { "value": "10", "label": "10" },
         { "value": "15", "label": "15" },
-        { "value": "25", "label": "25" }
+        { "value": "20", "label": "20" },
+        { "value": "30", "label": "30" },
+        { "value": "40", "label": "40" }
+      ]
+    },
+    {
+      "key": "pagesPerChannel",
+      "label": "Páginas a cargar",
+      "type": "select",
+      "default": "2",
+      "hint": "Cada página trae \~20 posts. Más páginas = más vídeos antiguos.",
+      "options": [
+        { "value": "1", "label": "1 página" },
+        { "value": "2", "label": "2 páginas" },
+        { "value": "3", "label": "3 páginas" }
       ]
     }
   ]
