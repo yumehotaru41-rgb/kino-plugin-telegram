@@ -6,28 +6,29 @@ const UA =
 
 function normalizeUsername(raw) {
   if (!raw) return "";
-  return String(raw)
-    .trim()
-    .replace(/^@+/, "")
-    .replace(/^https?:\/\/(t\.me|telegram\.me)\//i, "")
-    .replace(/^s\//i, "")
-    .split(/[/?#]/)[0]
-    .toLowerCase();
+  let s = String(raw).trim();
+  s = s.replace(/^@+/, "");
+  s = s.replace(/^https?:\/\/(www\.)?(t\.me|telegram\.me)\//i, "");
+  s = s.replace(/^s\//i, "");
+  s = s.split(/[/?#]/)[0];
+  return s.toLowerCase();
 }
 
 function getChannels() {
   const list = kino.config.get("channels");
   if (!Array.isArray(list) || list.length === 0) return [];
-  return list
-    .map((row) => {
-      const username = normalizeUsername(row.username);
-      if (!username) return null;
-      return {
-        username,
-        label: (row.label && String(row.label).trim()) || username,
-      };
-    })
-    .filter(Boolean);
+  const seen = new Set();
+  const out = [];
+  for (const row of list) {
+    const username = normalizeUsername(row.username || row.label || "");
+    if (!username || seen.has(username)) continue;
+    seen.add(username);
+    out.push({
+      username,
+      label: (row.label && String(row.label).trim()) || username,
+    });
+  }
+  return out;
 }
 
 function getMaxPerChannel() {
@@ -70,11 +71,15 @@ function parseVideoPosts(html, channel) {
     const numId = parseInt(id, 10);
     if (oldestId === null || numId < oldestId) oldestId = numId;
 
-    const videoPlayers = kino.html.select(
-      wrap.html,
-      "a.tgme_widget_message_video_player, .tgme_widget_message_video_player"
-    );
-    if (!videoPlayers.length) continue;
+    const hasVideoPlayer =
+      /tgme_widget_message_video_player/i.test(wrap.html) ||
+      kino.html.select(wrap.html, ".tgme_widget_message_video_player, a.tgme_widget_message_video_player").length > 0;
+
+    const hasVideoThumb =
+      /tgme_widget_message_video_thumb/i.test(wrap.html) ||
+      kino.html.select(wrap.html, ".tgme_widget_message_video_thumb").length > 0;
+
+    if (!hasVideoPlayer && !hasVideoThumb) continue;
 
     let title = "";
     let overview = "";
@@ -223,7 +228,7 @@ export async function home() {
   if (!rows.length) {
     throw kino.error(
       "not_found",
-      "No se encontraron vídeos en los canales configurados. Comprueba que tengan vista pública (t.me/s/usuario)."
+      "No se encontraron vídeos. Usa solo el usuario del canal (ej: suculemcia), sin https://t.me/. El canal debe tener vista pública."
     );
   }
 
@@ -318,45 +323,45 @@ export async function resolve(ref) {
   const channel = parts[0].toLowerCase();
   const msgId = parts[1];
 
-  const embedUrl =
-    `\( {BASE}/ \){encodeURIComponent(channel)}/${encodeURIComponent(msgId)}` +
-    "?embed=1&single";
+  const embedUrls = [
+    `\( {BASE}/ \){encodeURIComponent(channel)}/${encodeURIComponent(msgId)}?embed=1&single`,
+    `\( {BASE}/ \){encodeURIComponent(channel)}/${encodeURIComponent(msgId)}?embed=1`,
+    `\( {BASE}/ \){encodeURIComponent(channel)}/${encodeURIComponent(msgId)}?embed=1&mode=tme`,
+  ];
 
-  const r = await kino.fetch(embedUrl, {
-    headers: {
-      "User-Agent": UA,
-      Accept: "text/html,application/xhtml+xml",
-      Referer: `\( {BASE}/s/ \){channel}`,
-      "Accept-Language": "es-ES,es;q=0.9,en;q=0.8",
-    },
-    timeoutMs: 22000,
-  });
+  let videoUrl = null;
 
-  if (!r.ok) {
-    throw kino.error("not_found", `No se pudo abrir el post (${r.status})`);
+  for (const embedUrl of embedUrls) {
+    const r = await kino.fetch(embedUrl, {
+      headers: {
+        "User-Agent": UA,
+        Accept: "text/html,application/xhtml+xml",
+        Referer: `\( {BASE}/s/ \){channel}`,
+        "Accept-Language": "es-ES,es;q=0.9,en;q=0.8",
+      },
+      timeoutMs: 20000,
+    });
+    if (!r.ok) continue;
+    videoUrl = extractVideoUrl(r.text());
+    if (videoUrl) break;
   }
-
-  const html = r.text();
-  const videoUrl = extractVideoUrl(html);
 
   if (!videoUrl) {
     throw kino.error(
       "not_found",
-      "Este post no tiene un vídeo reproducible o el enlace ha caducado"
+      "Telegram no expone el vídeo de este post en la vista pública (not_supported). Prueba otro canal o post más reciente."
     );
   }
-
-  const headers = {
-    Referer: `\( {BASE}/ \){channel}/${msgId}`,
-    "User-Agent": UA,
-  };
 
   return {
     url: videoUrl,
     mime: /\.m3u8(\?|$)/i.test(videoUrl)
       ? "application/x-mpegURL"
       : "video/mp4",
-    headers,
+    headers: {
+      Referer: `\( {BASE}/ \){channel}/${msgId}`,
+      "User-Agent": UA,
+    },
     expiresInSeconds: 3600,
   };
 }

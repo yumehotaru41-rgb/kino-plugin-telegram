@@ -1,7 +1,7 @@
 {
   "id": "telegram-public",
   "name": "Telegram públicos",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "apiVersion": 6,
   "entry": "plugin.js",
   "description": "Reproduce vídeos de canales públicos de Telegram. Configura los usuarios de los canales (sin @) en Ajustes. Solo canales con vista pública.",
